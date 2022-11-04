@@ -1,18 +1,14 @@
 //require models
-const userregistration = require("../../Models/Wybritappusers/UserRegistration");
+const userregistration = require("../../Models/UserModels/usermodels");
 // user registration controller
-const WybritUserRegistration = async (req, res) => {
+const UserRegistrationController = async (req, res) => {
   const data = new userregistration({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
     number: req.body.number,
     password: req.body.password,
-    address1: req.body.address1,
-    address2: req.body.address2,
-    country: req.body.country,
-    state: req.body.state,
-    city: req.body.city,
+    confirmpassword: req.body.confirmpassword,
   });
   try {
     const savedata = await data.save();
@@ -24,7 +20,7 @@ const WybritUserRegistration = async (req, res) => {
 };
 
 //user login controller
-const WybritUserLogin = async (req, res) => {
+const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
@@ -47,6 +43,6 @@ const WybritUserLogin = async (req, res) => {
 };
 
 module.exports = {
-  WybritUserRegistration,
-  WybritUserLogin,
+  UserRegistrationController,
+  UserLoginController,
 };
