@@ -2,7 +2,6 @@
 const userregistration = require("../../Models/UserModels/usermodels");
 // user registration controller
 const UserRegistrationController = async (req, res) => {
-  console.log(req.body);
   const data = new userregistration({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
