@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
 
-const hostname = process.env.HOSTNAME;
+const HOSTNAME = process.env.HOSTNAME;
 const PORT = process.env.PORT || 4000;
 
 // app.get("/", (req, res) => {
