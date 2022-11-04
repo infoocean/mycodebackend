@@ -22,7 +22,6 @@ const UserRegistrationSchema = new Schema({
   },
   confirmpassword: {
     type: String,
-    required: true,
   },
 });
 
