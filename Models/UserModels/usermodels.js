@@ -4,11 +4,9 @@ const { Schema } = mongoose;
 const UserRegistrationSchema = new Schema({
   firstname: {
     type: String,
-    required: true,
   },
   lastname: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -17,14 +15,14 @@ const UserRegistrationSchema = new Schema({
   },
   number: {
     type: Number,
-    required: true,
-    unique: true,
   },
   password: {
     type: String,
+    required: true,
   },
   confirmpassword: {
     type: String,
+    required: true,
   },
 });
 
