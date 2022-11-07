@@ -14,7 +14,7 @@ const UserRegistrationSchema = new Schema({
     unique: true,
   },
   number: {
-    type: Number,
+    type: String,
   },
   password: {
     type: String,
