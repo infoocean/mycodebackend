@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 //database info
-const username = "shubhamjaiswal";
-const password = "AKoTTxQRyuU3NA1K";
-const dbname = "mytaskbackend";
+const username = process.env.dbusername;
+const password = process.env.password;
+const dbname = process.env.dbname;
 const db_cluster_url = `mongodb+srv://${username}:${password}@cluster0.08polbo.mongodb.net/${dbname}?retryWrites=true&w=majority`;
 //connect database
 mongoose
