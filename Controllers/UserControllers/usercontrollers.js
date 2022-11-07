@@ -18,7 +18,7 @@ const UserRegistrationController = async (req, res) => {
   });
 
   try {
-    const check_email = await userregistration.findOne({
+    const check_email = await userregistration.find({
       email: req.body.email,
     });
     if (check_email !== null) {
@@ -35,7 +35,7 @@ const UserRegistrationController = async (req, res) => {
 const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
-    const isuser = await userregistration.findOne({
+    const isuser = await userregistration.find({
       email: email,
     });
     //console.log(isuser);
