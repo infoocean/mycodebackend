@@ -1,21 +1,33 @@
+const bcrypt = require("bcryptjs");
 //require models
 const userregistration = require("../../Models/UserModels/usermodels");
 // user registration controller
 const UserRegistrationController = async (req, res) => {
+  const secure_password = await bcrypt.hash(req.body.password, 12);
+  const secure_confirmpassword = await bcrypt.hash(
+    req.body.confirmpassword,
+    12
+  );
   const data = new userregistration({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
     number: req.body.number,
-    password: req.body.password,
-    confirmpassword: req.body.confirmpassword,
+    password: secure_password,
+    confirmpassword: secure_confirmpassword,
   });
+
   try {
+    const check_email = await userregistration.findOne({
+      email: req.body.email,
+    });
+    if (check_email !== null) {
+      return res.status(200).send({ message: "email allready exists" });
+    }
     const savedata = await data.save();
     res.status(201).send({ message: "data save successfully", savedata });
   } catch (error) {
-    //console.log(error);
-    res.status(400).send({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -23,22 +35,26 @@ const UserRegistrationController = async (req, res) => {
 const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
-    const password = req.body.password;
     const isuser = await userregistration.findOne({
       email: email,
-      password: password,
     });
     //console.log(isuser);
+
     if (isuser !== null) {
-      res.status(200).send({ message: "login successfully", userinfo: isuser });
+      const is_password_match = await bcrypt.compare(
+        req.body.password,
+        isuser.password
+      );
+      if (is_password_match === true) {
+        res.status(200).send({ message: "login successfully" });
+      } else {
+        res.status(400).json({ error: "invalid email or password" });
+      }
     } else {
-      res.status(400).send({
-        message:
-          "email or password does not exists enter Valid Email or password",
-      });
+      res.status(400).json({ error: "invalid crendentials" });
     }
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
