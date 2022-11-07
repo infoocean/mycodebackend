@@ -46,7 +46,7 @@ const UserLoginController = async (req, res) => {
         isuser.password
       );
       if (is_password_match === true) {
-        res.status(200).send({ message: "login successfully" });
+        res.status(200).send({ message: "user login successfully" });
       } else {
         res.status(400).json({ error: "invalid email or password" });
       }
