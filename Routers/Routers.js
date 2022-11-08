@@ -10,7 +10,6 @@ const {
 //routes
 router.post("/usersignup", UserRegistrationController);
 router.post("/userlogin", UserLoginController);
-
 router.get("/userdata", UserData);
 
 module.exports = router;

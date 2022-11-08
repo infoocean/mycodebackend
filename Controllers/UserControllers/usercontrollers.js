@@ -35,6 +35,17 @@ const UserRegistrationController = async (req, res) => {
 const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
+
+    // const password = req.body.password;
+    // const secpass = await bcrypt.hash(password, 12);
+    // //console.log(secpass);
+    // const user = await userregistration.findOne({
+    //   email: email,
+    //   password: secpass,
+    // });
+    // console.log(user);
+    // return false;
+
     const isuser = await userregistration.findOne({
       email: email,
     });
