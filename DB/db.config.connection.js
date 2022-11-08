@@ -8,6 +8,7 @@ const db_cluster_url = `mongodb+srv://${username}:${password}@cluster0.08polbo.m
 mongoose
   .connect(db_cluster_url, {
     useNewUrlParser: true,
+    useCreateIndex: true,
     useUnifiedTopology: true,
   })
   .then(() => {
