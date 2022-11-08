@@ -58,7 +58,19 @@ const UserLoginController = async (req, res) => {
   }
 };
 
+//get all users
+
+const UserData = async (req, res) => {
+  try {
+    const users = await userregistration.find();
+    res.status(200).send({ message: "ok", data: users });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   UserRegistrationController,
   UserLoginController,
+  UserData,
 };
