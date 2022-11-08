@@ -6,10 +6,7 @@ const dbname = process.env.dbname;
 const db_cluster_url = `mongodb+srv://${username}:${password}@cluster0.08polbo.mongodb.net/${dbname}?retryWrites=true&w=majority`;
 //connect database
 mongoose
-  .connect(db_cluster_url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(db_cluster_url)
   .then(() => {
     console.log("db connection successfull");
   })
