@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 //require models
 const userregistration = require("../../Models/UserModels/usermodels");
 // user registration controller
@@ -50,14 +51,17 @@ const UserLoginController = async (req, res) => {
       email: email,
     });
     //console.log(isuser);
-
     if (isuser !== null) {
       const is_password_match = await bcrypt.compare(
         req.body.password,
         isuser.password
       );
       if (is_password_match === true) {
-        res.status(200).send({ message: "user login successfully" });
+        const jwt_token = await isuser.generateAuthToken();
+        //console.log(jwt_token);
+        res
+          .status(200)
+          .send({ message: "user login successfully", token: jwt_token });
       } else {
         res.status(400).json({ error: "invalid email or password" });
       }
