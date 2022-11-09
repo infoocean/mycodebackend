@@ -61,7 +61,6 @@ const UserLoginController = async (req, res) => {
         //console.log(jwt_token);
         //set token in cookies
         res.cookie("jwt_auth_shub_token", jwt_token, {
-          expires: "",
           httpOnly: true,
         });
         res
