@@ -59,15 +59,14 @@ const UserLoginController = async (req, res) => {
       if (is_password_match === true) {
         const jwt_token = await isuser.generateAuthToken();
         //console.log(jwt_token);
-        res
-          .status(200)
-          .send({ message: "user login successfully", token: jwt_token });
-
         //set token in cookies
-        res.cookies("jwt_auth_shub_token", jwt_token, {
+        res.cookie("jwt_auth_shub_token", jwt_token, {
           expires: "",
           httpOnly: true,
         });
+        res
+          .status(200)
+          .send({ message: "user login successfully", token: jwt_token });
       } else {
         res.status(400).json({ error: "invalid email or password" });
       }
