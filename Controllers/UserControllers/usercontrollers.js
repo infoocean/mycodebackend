@@ -78,11 +78,16 @@ const UserLoginController = async (req, res) => {
 };
 
 //get all users
-
 const UserData = async (req, res) => {
   try {
-    const users = await userregistration.find();
-    res.status(200).send({ message: "ok", data: users });
+    const users = await userregistration
+      .find()
+      .select(["-password", "-confirmpassword", "-tokens"]);
+    if (users) {
+      res.status(200).send({ message: "ok", data: users });
+    } else {
+      res.status(404).send({ message: "user not found" });
+    }
   } catch (error) {
     res.status(500).send(error);
   }
