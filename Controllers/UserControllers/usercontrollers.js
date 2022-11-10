@@ -4,16 +4,29 @@ const jwt = require("jsonwebtoken");
 const userregistration = require("../../Models/UserModels/usermodels");
 // user registration controller
 const UserRegistrationController = async (req, res) => {
-  const secure_password = await bcrypt.hash(req.body.password, 12);
-  const secure_confirmpassword = await bcrypt.hash(
-    req.body.confirmpassword,
-    12
-  );
+  const { firstname, lastname, number, email, password, confirmpassword } =
+    req.body;
+
+  if (
+    !firstname ||
+    !lastname ||
+    !number ||
+    !email ||
+    !password ||
+    !confirmpassword
+  ) {
+    return res.status(400).send({ message: "all feild is required" });
+  }
+
+  //password bycript
+  const secure_password = await bcrypt.hash(password, 12);
+  const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
+
   const data = new userregistration({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    number: req.body.number,
+    firstname: firstname,
+    lastname: lastname,
+    email: email,
+    number: number,
     password: secure_password,
     confirmpassword: secure_confirmpassword,
   });
@@ -23,10 +36,21 @@ const UserRegistrationController = async (req, res) => {
       email: req.body.email,
     });
     if (check_email !== null) {
-      return res.status(200).send({ message: "email allready exists" });
+      return res
+        .status(409)
+        .send({ message: "email allready registred please login" });
     }
+    const jwt_token = await data.generateAuthToken();
+    //console.log(jwt_token);
     const savedata = await data.save();
-    res.status(201).send({ message: "data save successfully", savedata });
+    const send_user_data = {
+      firstname: savedata.firstname,
+      lastname: savedata.lastname,
+      email: savedata.email,
+      number: savedata.number,
+    };
+
+    res.status(201).send({ message: "data save successfully", send_user_data });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -50,22 +74,31 @@ const UserLoginController = async (req, res) => {
     const isuser = await userregistration.findOne({
       email: email,
     });
-    //console.log(isuser);
+
+    console.log("register token", isuser.token);
     if (isuser !== null) {
       const is_password_match = await bcrypt.compare(
         req.body.password,
         isuser.password
       );
       if (is_password_match === true) {
-        const jwt_token = await isuser.generateAuthToken();
-        //console.log(jwt_token);
-        //set token in cookies
-        res.cookie("jwt_auth_shub_token", jwt_token, {
-          httpOnly: true,
-        });
+        // const jwt_token = await isuser.generateAuthToken();
+        // //console.log(jwt_token);
+        // //set token in cookies
+        // res.cookie("jwt_auth_shub_token", jwt_token, {
+        //   httpOnly: true,
+        // });
+
+        const token = jwt.sign({ _id: isuser._id }, process.env.JWT_SECRET_KEY);
+
+        console.log("login token", token);
+
+        var decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        console.log(decoded);
+
         res
           .status(200)
-          .send({ message: "user login successfully", token: jwt_token });
+          .send({ message: "user login successfully", token: token });
       } else {
         res.status(400).json({ error: "invalid email or password" });
       }

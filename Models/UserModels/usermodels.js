@@ -24,20 +24,16 @@ const UserRegistrationSchema = new Schema({
   confirmpassword: {
     type: String,
   },
-  tokens: [
-    {
-      token: {
-        type: String,
-      },
-    },
-  ],
+  token: {
+    type: String,
+  },
 });
 
 //generate auth token
 UserRegistrationSchema.methods.generateAuthToken = async function (param) {
   try {
-    const token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
-    this.tokens = this.tokens.concat({ token: token });
+    const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET_KEY);
+    this.token = token;
     await this.save();
     return token;
   } catch (error) {
