@@ -37,7 +37,7 @@ const UserRegistrationController = async (req, res) => {
     });
     if (check_email !== null) {
       return res
-        .status(409)
+        .status(400)
         .send({ message: "email allready registred please login" });
     }
     const jwt_token = await data.generateAuthToken();
@@ -60,7 +60,6 @@ const UserRegistrationController = async (req, res) => {
 const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
-
     // const password = req.body.password;
     // const secpass = await bcrypt.hash(password, 12);
     // //console.log(secpass);
@@ -75,30 +74,19 @@ const UserLoginController = async (req, res) => {
       email: email,
     });
 
-    console.log("register token", isuser.token);
     if (isuser !== null) {
       const is_password_match = await bcrypt.compare(
         req.body.password,
         isuser.password
       );
       if (is_password_match === true) {
-        // const jwt_token = await isuser.generateAuthToken();
-        // //console.log(jwt_token);
-        // //set token in cookies
+        //const jwt_token = await isuser.generateAuthToken();
+        //console.log(jwt_token);
+        //set token in cookies
         // res.cookie("jwt_auth_shub_token", jwt_token, {
         //   httpOnly: true,
         // });
-
-        const token = jwt.sign({ _id: isuser._id }, process.env.JWT_SECRET_KEY);
-
-        console.log("login token", token);
-
-        var decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        console.log(decoded);
-
-        res
-          .status(200)
-          .send({ message: "user login successfully", token: token });
+        res.status(200).send({ message: "user login successfully" });
       } else {
         res.status(400).json({ error: "invalid email or password" });
       }
