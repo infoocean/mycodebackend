@@ -127,7 +127,7 @@ const getreceptionistcontroller = async (req, res) => {
       "-confirmpassword",
       "-tokens",
     ]);
-    console.log(visitors.length);
+    //console.log(visitors.length);
     //return false;
     if (visitors.length > 0) {
       res.status(200).send({ message: "ok", data: visitors });

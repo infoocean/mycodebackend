@@ -15,8 +15,9 @@ const {
 //###############################   visitors controllers  #######################
 const {
   visitorregistrationcontroller,
-  visitorlogincontroller,
+  // visitorlogincontroller,
   getvisitscontroller,
+  getvisitsbyidcontroller,
 } = require("../Controllers/VisitorsController/visitorscontrollers");
 
 //###############################   Receptionist controllers  #######################
@@ -44,8 +45,9 @@ router.post(
   verifyAuthToken,
   visitorregistrationcontroller
 );
-router.post("/visitorlogin", verifyAuthToken, visitorlogincontroller);
-router.post("/getvisitors", verifyAuthToken, getvisitscontroller);
+// router.post("/visitorlogin", verifyAuthToken, visitorlogincontroller);
+router.get("/getvisitors", verifyAuthToken, getvisitscontroller);
+router.get("/getvisitorbyid/:id", verifyAuthToken, getvisitsbyidcontroller);
 
 //receptionist router
 router.post(
