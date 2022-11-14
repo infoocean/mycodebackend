@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const VisitorsSchema = new Schema({
+const ReceptionistSchema = new Schema({
   firstname: {
     type: String,
   },
@@ -27,13 +27,25 @@ const VisitorsSchema = new Schema({
   confirmpassword: {
     type: String,
   },
-  dateofbirth: {
+  dob: {
     type: Date,
   },
   age: {
     type: Number,
   },
-  addressofarea: {
+  address1: {
+    type: String,
+  },
+  address2: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  country: {
     type: String,
   },
   tokens: [
@@ -44,7 +56,7 @@ const VisitorsSchema = new Schema({
 });
 
 //generate login auth token
-VisitorsSchema.methods.generateAuthToken = async function () {
+ReceptionistSchema.methods.generateAuthToken = async function () {
   try {
     const token = jwt.sign({ _id: this._id }, process.env.JWT_SECRET_KEY);
     this.tokens = this.tokens.concat({ token: token });
@@ -55,5 +67,8 @@ VisitorsSchema.methods.generateAuthToken = async function () {
   }
 };
 
-const visitorsmodel = new mongoose.model("Visitors", VisitorsSchema);
-module.exports = visitorsmodel;
+const Receptionistmodel = new mongoose.model(
+  "Receptionist",
+  ReceptionistSchema
+);
+module.exports = Receptionistmodel;

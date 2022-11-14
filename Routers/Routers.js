@@ -19,6 +19,13 @@ const {
   getvisitscontroller,
 } = require("../Controllers/VisitorsController/visitorscontrollers");
 
+//###############################   Receptionist controllers  #######################
+const {
+  receptionistregistrationcontroller,
+  receptionistlogincontroller,
+  getreceptionistcontroller,
+} = require("../Controllers/ReceptionistController/receptionistcontroller");
+
 //###############################   super admin controller  #######################
 const {
   superadminregistrationcontroller,
@@ -39,6 +46,15 @@ router.post(
 );
 router.post("/visitorlogin", verifyAuthToken, visitorlogincontroller);
 router.post("/getvisitors", verifyAuthToken, getvisitscontroller);
+
+//receptionist router
+router.post(
+  "/receptionistregistration",
+  verifyAuthToken,
+  receptionistregistrationcontroller
+);
+router.post("/receptionistlogin", verifyAuthToken, receptionistlogincontroller);
+router.get("/getreceptionist", verifyAuthToken, getreceptionistcontroller);
 
 //super admin router
 router.post("/superadminreg", superadminregistrationcontroller);

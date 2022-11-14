@@ -1,10 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 //require models
-const visitorsmodel = require("../../Models/visitormodel/visitormodel");
+const Receptionistmodel = require("../../Models/ReceptionistModel/receptionistmodel");
 
-// visitor registration controller
-const visitorregistrationcontroller = async (req, res) => {
+// eceptionist registration controller
+const receptionistregistrationcontroller = async (req, res) => {
+  //console.log(req.body);
   const {
     firstname,
     lastname,
@@ -13,9 +14,13 @@ const visitorregistrationcontroller = async (req, res) => {
     email,
     password,
     confirmpassword,
-    dateofbirth,
+    dob,
     age,
-    addressofarea,
+    address1,
+    address2,
+    city,
+    state,
+    country,
   } = req.body;
 
   if (
@@ -26,9 +31,8 @@ const visitorregistrationcontroller = async (req, res) => {
     !password ||
     !confirmpassword ||
     !username ||
-    !dateofbirth ||
-    !age ||
-    !addressofarea
+    !dob ||
+    !age
   ) {
     return res.status(400).send({ message: "all feild is required" });
   }
@@ -37,7 +41,7 @@ const visitorregistrationcontroller = async (req, res) => {
   const secure_password = await bcrypt.hash(password, 12);
   const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
 
-  const visitordata = new visitorsmodel({
+  const receptionistdata = new Receptionistmodel({
     firstname: firstname,
     lastname: lastname,
     username: username,
@@ -45,43 +49,50 @@ const visitorregistrationcontroller = async (req, res) => {
     number: number,
     password: secure_password,
     confirmpassword: secure_confirmpassword,
-    dateofbirth: dateofbirth,
+    dob: dob,
     age: age,
-    addressofarea: addressofarea,
+    address1: address1,
+    address2: address2,
+    city: city,
+    state: state,
+    country: country,
   });
 
   try {
-    const check_email = await visitorsmodel.findOne({
+    const check_email = await Receptionistmodel.findOne({
       email: email,
     });
     if (check_email !== null) {
       return res
-        .status(409)
+        .status(200)
         .send({ message: "email allready registred please login" });
     }
-    const savedata = await visitordata.save();
-    const send_visitor_data = {
+    const savedata = await receptionistdata.save();
+    const send_Receptionist_data = {
       firstname: savedata.firstname,
       lastname: savedata.lastname,
       email: savedata.email,
       number: savedata.number,
     };
-    res
-      .status(201)
-      .send({ message: "data save successfully", data: send_visitor_data });
+    res.status(201).send({
+      message: "data save successfully",
+      data: send_Receptionist_data,
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 };
 
-//visitor login controller
-const visitorlogincontroller = async (req, res) => {
-  const { email, username, password } = req.body;
+//receptionist login controller
+const receptionistlogincontroller = async (req, res) => {
+  //console.log(req.body);
+  const { usernameemail, password } = req.body;
   try {
-    const isuser = await visitorsmodel.findOne({
-      email: email,
+    const isuser = await Receptionistmodel.findOne({
+      $or: [{ email: usernameemail }, { username: usernameemail }],
     });
-
+    //console.log(isuser);
+    //return false;
     if (isuser !== null) {
       const is_password_match = await bcrypt.compare(
         req.body.password,
@@ -108,18 +119,20 @@ const visitorlogincontroller = async (req, res) => {
   }
 };
 
-//get all visitors controllers
-const getvisitscontroller = async (req, res) => {
+//get all receptionist controllers
+const getreceptionistcontroller = async (req, res) => {
   try {
-    const visitors = await visitorsmodel
-      .find()
-      .select(["-password", "-confirmpassword", "-tokens"]);
+    const visitors = await Receptionistmodel.find().select([
+      "-password",
+      "-confirmpassword",
+      "-tokens",
+    ]);
     console.log(visitors.length);
-    return false;
-    if (visitors.length >= 0) {
+    //return false;
+    if (visitors.length > 0) {
       res.status(200).send({ message: "ok", data: visitors });
     } else {
-      res.status(404).send({ message: "user not found" });
+      res.status(404).send({ message: "data not found" });
     }
   } catch (error) {
     res.status(500).send(error);
@@ -127,7 +140,7 @@ const getvisitscontroller = async (req, res) => {
 };
 
 module.exports = {
-  visitorregistrationcontroller,
-  visitorlogincontroller,
-  getvisitscontroller,
+  receptionistregistrationcontroller,
+  receptionistlogincontroller,
+  getreceptionistcontroller,
 };
