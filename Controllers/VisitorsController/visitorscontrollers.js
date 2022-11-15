@@ -1,11 +1,20 @@
 const bcrypt = require("bcryptjs");
+const QRCode = require("qrcode");
 //require models
 const visitorsmodel = require("../../Models/visitormodel/visitormodel");
 
 // visitor registration controller
 const visitorregistrationcontroller = async (req, res) => {
-  const { name, email, age, address, purposetovisit, time } = req.body;
-  if (!name || !email || !age || !address || !purposetovisit || !time) {
+  const { name, email, age, address, purposetovisit, checkindatetime } =
+    req.body;
+  if (
+    !name ||
+    !email ||
+    !age ||
+    !address ||
+    !purposetovisit ||
+    !checkindatetime
+  ) {
     return res.status(400).send({ message: "all feild is required" });
   }
   const visitordata = new visitorsmodel({
@@ -14,7 +23,7 @@ const visitorregistrationcontroller = async (req, res) => {
     age: age,
     address: address,
     purposetovisit: purposetovisit,
-    time: time,
+    checkindatetime: checkindatetime,
   });
   try {
     const check_email = await visitorsmodel.findOne({
@@ -30,11 +39,28 @@ const visitorregistrationcontroller = async (req, res) => {
       age: savedata.age,
       address: savedata.address,
       purposetovisit: savedata.purposetovisit,
-      time: savedata.time,
+      checkindatetime: savedata.checkindatetime,
     };
     res
       .status(201)
       .send({ message: "data save successfully", data: send_visitor_data });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+// visitor update controller
+const visitorupdatecontroller = async (req, res) => {
+  const _id = req.params.id;
+  const updatedta = req.body;
+  try {
+    const queryupdatedata = await visitorsmodel.findByIdAndUpdate(
+      _id,
+      updatedta,
+      { new: true }
+    );
+    //console.log(queryupdatedata);
+    res.status(202).send({ message: "data updated successfully" });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -96,7 +122,7 @@ const getvisitsbyidcontroller = async (req, res) => {
   //return false;
   try {
     const visitorsdet = await visitorsmodel.find({ _id: req.params.id });
-    console.log(visitorsdet);
+    //console.log(visitorsdet);
     if (visitorsdet) {
       res.status(200).send({ message: "ok", data: visitorsdet });
     } else {
@@ -107,9 +133,25 @@ const getvisitsbyidcontroller = async (req, res) => {
   }
 };
 
+//generate qr code
+const generateqrcodevisitorcontroller = async (req, res) => {
+  //console.log(req.params.id);
+  try {
+    myvisitordata = await visitorsmodel.findOne({ _id: req.params.id });
+    if (myvisitordata) {
+      const myqrdata = await QRCode.toDataURL(myvisitordata.name);
+      res.status(200).send({ data: myqrdata });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   visitorregistrationcontroller,
   // visitorlogincontroller,
   getvisitscontroller,
   getvisitsbyidcontroller,
+  visitorupdatecontroller,
+  generateqrcodevisitorcontroller,
 };
