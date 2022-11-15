@@ -18,6 +18,8 @@ const {
   // visitorlogincontroller,
   getvisitscontroller,
   getvisitsbyidcontroller,
+  visitorupdatecontroller,
+  generateqrcodevisitorcontroller,
 } = require("../Controllers/VisitorsController/visitorscontrollers");
 
 //###############################   Receptionist controllers  #######################
@@ -32,6 +34,11 @@ const {
   superadminregistrationcontroller,
   superadminlogincontroller,
 } = require("../Controllers/SuperAdminController/superadmincontroller");
+
+//###################################### send mail controller #######################
+const {
+  sendmailcontroller,
+} = require("../Controllers/SendmailController/sendmailcontroller");
 
 //routes
 //user router
@@ -48,6 +55,10 @@ router.post(
 // router.post("/visitorlogin", verifyAuthToken, visitorlogincontroller);
 router.get("/getvisitors", verifyAuthToken, getvisitscontroller);
 router.get("/getvisitorbyid/:id", verifyAuthToken, getvisitsbyidcontroller);
+router.patch("/editvisitor/:id", verifyAuthToken, visitorupdatecontroller);
+
+//generate qrcode controller
+router.post("/generateqrcodevisitor/:id", generateqrcodevisitorcontroller);
 
 //receptionist router
 router.post(
@@ -61,5 +72,8 @@ router.get("/getreceptionist", verifyAuthToken, getreceptionistcontroller);
 //super admin router
 router.post("/superadminreg", superadminregistrationcontroller);
 router.post("/superadminlog", superadminlogincontroller);
+
+//send mail router
+router.post("/sendmail", sendmailcontroller);
 
 module.exports = router;

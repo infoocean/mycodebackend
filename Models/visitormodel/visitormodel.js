@@ -20,8 +20,15 @@ const VisitorsSchema = new Schema({
   purposetovisit: {
     type: String,
   },
-  time: {
+  checkindatetime: {
     type: Date,
+  },
+  checkoutdatetime: {
+    type: Date,
+  },
+  status: {
+    type: Number,
+    default: 0,
   },
   tokens: [
     {
