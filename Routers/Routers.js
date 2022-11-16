@@ -41,6 +41,7 @@ const {
 } = require("../Controllers/SendmailController/sendmailcontroller");
 
 //routes
+
 //user router
 router.post("/usersignup", UserRegistrationController);
 router.post("/userlogin", verifyAuthToken, UserLoginController);
