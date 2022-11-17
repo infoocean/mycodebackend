@@ -198,7 +198,7 @@ const visitorsearchingcontroller = async (req, res) => {
   if (req.query["status"]) {
     query.push({ status: req.query["status"] });
   }
-  console.log(query);
+  //console.log(query);
   try {
     const data = await visitorsmodel.find({
       $and: query,
