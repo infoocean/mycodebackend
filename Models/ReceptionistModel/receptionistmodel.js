@@ -48,6 +48,9 @@ const ReceptionistSchema = new Schema({
   country: {
     type: String,
   },
+  postalcode: {
+    type: Number,
+  },
   tokens: [
     {
       token: { type: String },

@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const QRCode = require("qrcode");
+
 //require models
 const visitorsmodel = require("../../Models/visitormodel/visitormodel");
 
@@ -116,7 +117,7 @@ const getvisitscontroller = async (req, res) => {
   }
 };
 
-//get visitordetbyid controller
+//get visitordet byid controller
 const getvisitsbyidcontroller = async (req, res) => {
   //console.log(req.params.id);
   //return false;
@@ -130,6 +131,42 @@ const getvisitsbyidcontroller = async (req, res) => {
     }
   } catch (error) {
     res.status(500).send(error);
+  }
+};
+
+//get recent checking visitor controller
+const getrecentcheckingvisitors = async (req, res) => {
+  // const curr_date = new Date();
+  // let year = new Intl.DateTimeFormat("en", { year: "numeric" }).format(
+  //   curr_date
+  // );
+  // let month = new Intl.DateTimeFormat("en", { month: "short" }).format(
+  //   curr_date
+  // );
+  // let date = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(
+  //   curr_date
+  // );
+  // var mycurdate = `${date} ${month} ${year}`;
+  // var makeDate = new Date(mycurdate);
+  // console.log("Original date: ", makeDate.toString());
+  // makeDate.setMonth(makeDate.getMonth() - 1);
+  // //console.log("current date ", curr_date.toLocaleDateString());
+  // //console.log("1 month previous  date ", makeDate.toLocaleDateString());
+  // const currdt = curr_date.toLocaleDateString();
+  // const prev1mtdt = makeDate.toLocaleDateString();
+
+  try {
+    const recent_visitor = await visitorsmodel.aggregate([
+      { $sort: { checkindatetime: -1 } },
+      { $limit: 10 },
+    ]);
+    if (recent_visitor) {
+      res.status(200).send({ message: "ok", recent_visitor });
+    } else {
+      res.status(400).send({ message: "data not found" });
+    }
+  } catch (error) {
+    res.status(500).send({ error: error.message });
   }
 };
 
@@ -147,6 +184,34 @@ const generateqrcodevisitorcontroller = async (req, res) => {
   }
 };
 
+//visitor searching api
+const visitorsearchingcontroller = async (req, res) => {
+  //console.log(req.query);
+  //console.log(req.query["name"]);
+  let query = [];
+  if (req.query["name"]) {
+    query.push({ name: req.query["name"] });
+  }
+  if (req.query["email"]) {
+    query.push({ email: req.query["email"] });
+  }
+  if (req.query["status"]) {
+    query.push({ status: req.query["status"] });
+  }
+  console.log(query);
+  try {
+    const data = await visitorsmodel.find({
+      $and: query,
+    });
+    console.log(data);
+    if (data.length > 0) {
+      res.status(200).send({ message: "ok", data });
+    } else {
+      res.status(404).send({ message: "data not found" });
+    }
+  } catch (error) {}
+};
+
 module.exports = {
   visitorregistrationcontroller,
   // visitorlogincontroller,
@@ -154,4 +219,6 @@ module.exports = {
   getvisitsbyidcontroller,
   visitorupdatecontroller,
   generateqrcodevisitorcontroller,
+  visitorsearchingcontroller,
+  getrecentcheckingvisitors,
 };

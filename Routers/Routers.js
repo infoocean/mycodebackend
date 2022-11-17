@@ -20,6 +20,8 @@ const {
   getvisitsbyidcontroller,
   visitorupdatecontroller,
   generateqrcodevisitorcontroller,
+  visitorsearchingcontroller,
+  getrecentcheckingvisitors,
 } = require("../Controllers/VisitorsController/visitorscontrollers");
 
 //###############################   Receptionist controllers  #######################
@@ -27,6 +29,9 @@ const {
   receptionistregistrationcontroller,
   receptionistlogincontroller,
   getreceptionistcontroller,
+  updatereceptionistcontroller,
+  deletereceptionistcontroller,
+  getreceptionistbyidcontroller,
 } = require("../Controllers/ReceptionistController/receptionistcontroller");
 
 //###############################   super admin controller  #######################
@@ -47,7 +52,7 @@ router.post("/usersignup", UserRegistrationController);
 router.post("/userlogin", verifyAuthToken, UserLoginController);
 router.get("/userdata", verifyAuthToken, UserData);
 
-//visitor router
+//#########################################  visitor router ###############################
 router.post(
   "/visitorregistration",
   verifyAuthToken,
@@ -57,11 +62,14 @@ router.post(
 router.get("/getvisitors", verifyAuthToken, getvisitscontroller);
 router.get("/getvisitorbyid/:id", verifyAuthToken, getvisitsbyidcontroller);
 router.patch("/editvisitor/:id", verifyAuthToken, visitorupdatecontroller);
+router.post("/searchvisitor", verifyAuthToken, visitorsearchingcontroller);
+router.get(
+  "/getrecentcheckingvisitors",
+  verifyAuthToken,
+  getrecentcheckingvisitors
+);
 
-//generate qrcode controller
-router.post("/generateqrcodevisitor/:id", generateqrcodevisitorcontroller);
-
-//receptionist router
+//################################### receptionist router #######################
 router.post(
   "/receptionistregistration",
   verifyAuthToken,
@@ -69,12 +77,32 @@ router.post(
 );
 router.post("/receptionistlogin", verifyAuthToken, receptionistlogincontroller);
 router.get("/getreceptionist", verifyAuthToken, getreceptionistcontroller);
+router.put(
+  "/updatereceptionist/:id",
+  verifyAuthToken,
+  updatereceptionistcontroller
+);
+router.delete(
+  "/deletereceptionist/:id",
+  verifyAuthToken,
+  deletereceptionistcontroller
+);
+router.get(
+  "/getceptionist/:id",
+  verifyAuthToken,
+  getreceptionistbyidcontroller
+);
 
+//#########################################   generate auth token   ###############33
 //super admin router
 router.post("/superadminreg", superadminregistrationcontroller);
-router.post("/superadminlog", superadminlogincontroller);
+//super admin login and generate auth token
+router.post("/generateauthtoken", superadminlogincontroller);
 
-//send mail router
+//generate qrcode controller
+router.post("/generateqrcodevisitor/:id", generateqrcodevisitorcontroller);
+
+//##########################################      send mail router   ########################
 router.post("/sendmail", sendmailcontroller);
 
 module.exports = router;

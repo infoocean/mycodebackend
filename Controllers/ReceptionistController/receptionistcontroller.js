@@ -21,6 +21,7 @@ const receptionistregistrationcontroller = async (req, res) => {
     city,
     state,
     country,
+    postalcode,
   } = req.body;
 
   if (
@@ -56,6 +57,7 @@ const receptionistregistrationcontroller = async (req, res) => {
     city: city,
     state: state,
     country: country,
+    postalcode: postalcode,
   });
 
   try {
@@ -139,8 +141,62 @@ const getreceptionistcontroller = async (req, res) => {
   }
 };
 
+//update receptionist  controllers
+const updatereceptionistcontroller = async (req, res) => {
+  const _id = req.params.id;
+  const updatedta = req.body;
+  try {
+    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
+      _id,
+      updatedta,
+      { new: true }
+    );
+    //console.log(queryupdatedata);
+    res.status(202).send({ message: "data updated successfully" });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+//delete receptionist controllers
+const deletereceptionistcontroller = async (req, res) => {
+  const id = req.params.id;
+  //console.log(get_user_id);
+  try {
+    const deleteadminuserdata = await Receptionistmodel.deleteOne({
+      _id: id,
+    });
+    //console.log(deleteadminuserdata);
+    res.status(200).send({ message: `user deleted successfully` });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
+//get visitor by id controller
+const getreceptionistbyidcontroller = async (req, res) => {
+  const id = req.params.id;
+  //console.log(get_user_id);
+  try {
+    const receptionistdata = await Receptionistmodel.findOne({
+      _id: id,
+    });
+    if (receptionistdata !== null) {
+      //console.log(deleteadminuserdata);
+      res.status(200).send({ message: `ok  successfully`, receptionistdata });
+    } else {
+      res.status(400).send({ message: `data not found` });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
 module.exports = {
   receptionistregistrationcontroller,
   receptionistlogincontroller,
   getreceptionistcontroller,
+  updatereceptionistcontroller,
+  deletereceptionistcontroller,
+  getreceptionistbyidcontroller,
 };
