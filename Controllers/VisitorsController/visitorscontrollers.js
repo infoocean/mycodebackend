@@ -212,6 +212,20 @@ const visitorsearchingcontroller = async (req, res) => {
   } catch (error) {}
 };
 
+//delete visitor
+const visitordeletecontroller = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const deletevisitor = await visitorsmodel.deleteOne({
+      _id: id,
+    });
+    //console.log(deletevisitor);
+    res.status(200).send({ message: ` deleted successfully` });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 module.exports = {
   visitorregistrationcontroller,
   // visitorlogincontroller,
@@ -221,4 +235,5 @@ module.exports = {
   generateqrcodevisitorcontroller,
   visitorsearchingcontroller,
   getrecentcheckingvisitors,
+  visitordeletecontroller,
 };

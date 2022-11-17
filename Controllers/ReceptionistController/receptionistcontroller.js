@@ -163,11 +163,11 @@ const deletereceptionistcontroller = async (req, res) => {
   const id = req.params.id;
   //console.log(get_user_id);
   try {
-    const deleteadminuserdata = await Receptionistmodel.deleteOne({
+    const deleterecepionistdata = await Receptionistmodel.deleteOne({
       _id: id,
     });
-    //console.log(deleteadminuserdata);
-    res.status(200).send({ message: `user deleted successfully` });
+    //console.log(deleterecepionistdata);
+    res.status(200).send({ message: `data deleted successfully` });
   } catch (error) {
     res.status(500).json({ message: error });
   }

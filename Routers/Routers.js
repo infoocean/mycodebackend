@@ -22,6 +22,7 @@ const {
   generateqrcodevisitorcontroller,
   visitorsearchingcontroller,
   getrecentcheckingvisitors,
+  visitordeletecontroller,
 } = require("../Controllers/VisitorsController/visitorscontrollers");
 
 //###############################   Receptionist controllers  #######################
@@ -61,6 +62,7 @@ router.post(
 // router.post("/visitorlogin", verifyAuthToken, visitorlogincontroller);
 router.get("/getvisitors", verifyAuthToken, getvisitscontroller);
 router.get("/getvisitorbyid/:id", verifyAuthToken, getvisitsbyidcontroller);
+router.delete("/deletevisitor/:id", verifyAuthToken, visitordeletecontroller);
 router.patch("/editvisitor/:id", verifyAuthToken, visitorupdatecontroller);
 router.post("/searchvisitor", verifyAuthToken, visitorsearchingcontroller);
 router.get(
