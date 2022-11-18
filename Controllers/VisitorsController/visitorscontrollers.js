@@ -132,6 +132,11 @@ const getvisitscontroller = async (req, res) => {
     //console.log(visitors.length);
     //return false;
     if (visitors.length > 0) {
+      visitors = {
+        name: visitors.name,
+        email: visitors.email,
+        number: visitors.number,
+      };
       res.status(200).send({ message: "ok", data: visitors });
     } else {
       res.status(404).send({ message: "data not found" });

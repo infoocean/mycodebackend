@@ -37,24 +37,31 @@ const VisitorsSchema = new Schema({
   },
   datetime: {
     type: Date,
+    default: Date.now(),
   },
   govtidname: {
     type: String,
+    default: "",
   },
   govtidnumber: {
     type: Number,
+    default: "",
   },
   purposetovisit: {
     type: String,
+    default: "",
   },
   assets: {
     type: String,
+    default: "",
   },
   checkindatetime: {
     type: Date,
+    default: Date.now(),
   },
   checkoutdatetime: {
     type: Date,
+    default: Date.now(),
   },
   status: {
     type: Number,
