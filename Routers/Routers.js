@@ -3,6 +3,7 @@ const router = express.Router();
 
 // middlewares
 const { verifyAuthToken } = require("../Middlewares/auth");
+const { verifyLoginAuthToken } = require("../Middlewares/loginauthtoken");
 
 //controllers
 //###############################   user controllers  #######################
@@ -78,7 +79,12 @@ router.post(
   receptionistregistrationcontroller
 );
 router.post("/receptionistlogin", verifyAuthToken, receptionistlogincontroller);
-router.get("/getreceptionist", verifyAuthToken, getreceptionistcontroller);
+router.get(
+  "/getreceptionist",
+  //verifyAuthToken,
+  verifyLoginAuthToken,
+  getreceptionistcontroller
+);
 router.put(
   "/updatereceptionist/:id",
   verifyAuthToken,

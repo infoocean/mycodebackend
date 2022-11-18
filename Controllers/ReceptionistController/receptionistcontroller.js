@@ -104,11 +104,16 @@ const receptionistlogincontroller = async (req, res) => {
         const jwt_token = await isuser.generateAuthToken();
         //console.log(jwt_token);
         //set token in cookies
-        res.cookie("jwt_auth_shub_token", jwt_token, {
-          httpOnly: true,
-        });
+        // res.cookie("jwt_auth_shub_token", jwt_token, {
+        //   httpOnly: true,
+        //   expires: new Date(Date.now() + 30 * 24 * 3600000),
+        // });
         res
           .status(200)
+          .cookie("jwt_auth_shub_token", jwt_token, {
+            maxAge: 900000,
+            httpOnly: true,
+          })
           .send({ message: "user login successfully", token: jwt_token });
       } else {
         res.status(400).json({ error: "invalid email or password" });
