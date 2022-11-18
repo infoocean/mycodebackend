@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 //require models
 const Receptionistmodel = require("../../Models/ReceptionistModel/receptionistmodel");
 
@@ -84,7 +85,6 @@ const receptionistregistrationcontroller = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
-
 //receptionist login controller
 const receptionistlogincontroller = async (req, res) => {
   //console.log(req.body);
@@ -120,7 +120,6 @@ const receptionistlogincontroller = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
-
 //get all receptionist controllers
 const getreceptionistcontroller = async (req, res) => {
   try {
@@ -140,7 +139,6 @@ const getreceptionistcontroller = async (req, res) => {
     res.status(500).send(error);
   }
 };
-
 //update receptionist  controllers
 const updatereceptionistcontroller = async (req, res) => {
   const _id = req.params.id;
@@ -157,7 +155,6 @@ const updatereceptionistcontroller = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
-
 //delete receptionist controllers
 const deletereceptionistcontroller = async (req, res) => {
   const id = req.params.id;
@@ -172,8 +169,7 @@ const deletereceptionistcontroller = async (req, res) => {
     res.status(500).json({ message: error });
   }
 };
-
-//get visitor by id controller
+//get receptionist by id controller
 const getreceptionistbyidcontroller = async (req, res) => {
   const id = req.params.id;
   //console.log(get_user_id);

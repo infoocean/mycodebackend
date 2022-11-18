@@ -11,13 +11,43 @@ const VisitorsSchema = new Schema({
     required: true,
     unique: true,
   },
+  number: {
+    type: Number,
+  },
+  dob: {
+    type: Date,
+  },
   age: {
     type: Number,
   },
   address: {
     type: String,
   },
+  country: {
+    type: String,
+  },
+  state: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  postalcode: {
+    type: Number,
+  },
+  datetime: {
+    type: Date,
+  },
+  govtidname: {
+    type: String,
+  },
+  govtidnumber: {
+    type: Number,
+  },
   purposetovisit: {
+    type: String,
+  },
+  assets: {
     type: String,
   },
   checkindatetime: {

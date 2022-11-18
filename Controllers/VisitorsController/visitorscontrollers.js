@@ -6,25 +6,49 @@ const visitorsmodel = require("../../Models/visitormodel/visitormodel");
 
 // visitor registration controller
 const visitorregistrationcontroller = async (req, res) => {
-  const { name, email, age, address, purposetovisit, checkindatetime } =
-    req.body;
-  if (
-    !name ||
-    !email ||
-    !age ||
-    !address ||
-    !purposetovisit ||
-    !checkindatetime
-  ) {
+  const {
+    name,
+    email,
+    number,
+    dob,
+    age,
+    address,
+    country,
+    state,
+    city,
+    postalcode,
+    datetime,
+    govtidname,
+    govtidnumber,
+    purposetovisit,
+    assets,
+    checkindatetime,
+    checkoutdatetime,
+    status,
+  } = req.body;
+  if (!name || !email || !age || !address || !purposetovisit || !datetime) {
     return res.status(400).send({ message: "all feild is required" });
   }
   const visitordata = new visitorsmodel({
     name: name,
     email: email,
+    number: number,
+    dob: dob,
+    address: address,
+    country: country,
+    state: state,
+    city: city,
+    postalcode: postalcode,
     age: age,
     address: address,
+    datetime: datetime,
+    govtidname: govtidname,
+    govtidnumber: govtidnumber,
+    assets: assets,
     purposetovisit: purposetovisit,
     checkindatetime: checkindatetime,
+    checkoutdatetime: checkoutdatetime,
+    status: status,
   });
   try {
     const check_email = await visitorsmodel.findOne({
