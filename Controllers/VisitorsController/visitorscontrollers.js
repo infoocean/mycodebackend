@@ -212,13 +212,20 @@ const generateqrcodevisitorcontroller = async (req, res) => {
 const visitorsearchingcontroller = async (req, res) => {
   //console.log(req.query);
   //console.log(req.query["name"]);
+  let query = [];
+  if (req.query["name"]) {
+    query.push({ name: req.query["name"] });
+  }
+  if (req.query["email"]) {
+    query.push({ email: req.query["email"] });
+  }
+  if (req.query["status"]) {
+    query.push({ status: req.query["status"] });
+  }
+  //console.log(query);
   try {
     const data = await visitorsmodel.find({
-      $or: [
-        { name: req.query["name"] },
-        { email: req.query["email"] },
-        { status: req.query["status"] },
-      ],
+      $and: query,
     });
     console.log(data);
     if (data.length > 0) {
