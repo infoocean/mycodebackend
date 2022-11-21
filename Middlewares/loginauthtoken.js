@@ -3,7 +3,7 @@ const Receptionistmodel = require("../Models/ReceptionistModel/receptionistmodel
 const acces_data_secret_key = process.env.JWT_SECRET_KEY;
 
 const verifyLoginAuthToken = async (req, res, next) => {
-  const loginauthtoken = req.cookies.jwt_auth_shub_token;
+  const loginauthtoken = req.cookies.jwttoken;
   console.log("hii");
   console.log(loginauthtoken);
   try {

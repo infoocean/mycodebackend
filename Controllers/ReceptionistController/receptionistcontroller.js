@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const express = require("express");
+const app = express();
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 //require models
 const Receptionistmodel = require("../../Models/ReceptionistModel/receptionistmodel");
 
@@ -110,7 +113,7 @@ const receptionistlogincontroller = async (req, res) => {
         // });
         res
           .status(200)
-          .cookie("jwt_auth_shub_token", jwt_token, {
+          .cookie("jwttoken", jwt_token, {
             maxAge: 900000,
             httpOnly: true,
           })
