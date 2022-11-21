@@ -107,14 +107,15 @@ const receptionistlogincontroller = async (req, res) => {
         const jwt_token = await isuser.generateAuthToken();
         //console.log(jwt_token);
         //set token in cookies
-        // res.cookie("jwt_auth_shub_token", jwt_token, {
+        // res.cookie("jwttoken", jwt_token, {
+        //   maxAge: 7200000, // 2 hours
+        //   secure: false, // set to true if your using https
         //   httpOnly: true,
-        //   expires: new Date(Date.now() + 30 * 24 * 3600000),
         // });
         res
           .status(200)
           .cookie("jwttoken", jwt_token, {
-            maxAge: 900000,
+            maxAge: 18000,
             httpOnly: true,
           })
           .send({ message: "user login successfully", token: jwt_token });
@@ -196,6 +197,35 @@ const getreceptionistbyidcontroller = async (req, res) => {
   }
 };
 
+//logout controller
+const receptionistlogout = async (req, res) => {
+  // Set token to none and expire after 1 seconds
+  res.cookie("jwttoken", "none", {
+    expires: new Date(Date.now() + 1 * 1000),
+    httpOnly: true,
+  });
+  res
+    .status(200)
+    .json({ success: true, message: " receptionist logged out successfully" });
+};
+
+//getreceptionistbytoken
+
+const getreceptionistbytoken = async (req, res) => {
+  //console.log(req.params.login_token);
+  try {
+    const user_name = await Receptionistmodel.findOne({
+      "tokens.token": req.params.login_token,
+    }).select(["-tokens"]);
+    if (user_name) {
+      res.status(200).send({ user: user_name.firstname });
+    }
+    console.log(user_name);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   receptionistregistrationcontroller,
   receptionistlogincontroller,
@@ -203,4 +233,6 @@ module.exports = {
   updatereceptionistcontroller,
   deletereceptionistcontroller,
   getreceptionistbyidcontroller,
+  receptionistlogout,
+  getreceptionistbytoken,
 };

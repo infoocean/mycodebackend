@@ -34,6 +34,8 @@ const {
   updatereceptionistcontroller,
   deletereceptionistcontroller,
   getreceptionistbyidcontroller,
+  receptionistlogout,
+  getreceptionistbytoken,
 } = require("../Controllers/ReceptionistController/receptionistcontroller");
 
 //###############################   super admin controller  #######################
@@ -100,6 +102,9 @@ router.get(
   verifyAuthToken,
   getreceptionistbyidcontroller
 );
+
+router.get("/receptionistlogout", receptionistlogout);
+router.get("/getreceptionistbytoken/:login_token", getreceptionistbytoken);
 
 //#########################################   generate auth token   ###############33
 //super admin router

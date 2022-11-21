@@ -180,10 +180,12 @@ const getrecentcheckingvisitors = async (req, res) => {
   // const prev1mtdt = makeDate.toLocaleDateString();
 
   try {
-    const recent_visitor = await visitorsmodel.aggregate([
-      { $sort: { checkindatetime: -1 } },
-      { $limit: 10 },
-    ]);
+    const recent_visitor = await visitorsmodel
+      .find({ status: 1 })
+      .sort({ checkindatetime: -1 })
+      .limit(10);
+
+    console.log(recent_visitor);
     if (recent_visitor) {
       res.status(200).send({ message: "ok", recent_visitor });
     } else {
