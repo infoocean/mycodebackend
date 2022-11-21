@@ -50,6 +50,10 @@ const visitorregistrationcontroller = async (req, res) => {
     checkoutdatetime: checkoutdatetime,
     status: status,
   });
+
+  //console.log(visitordata);
+  //return false;
+
   try {
     const check_email = await visitorsmodel.findOne({
       email: email,
@@ -128,7 +132,7 @@ const visitorupdatecontroller = async (req, res) => {
 //get all visitors controllers
 const getvisitscontroller = async (req, res) => {
   try {
-    const visitors = await visitorsmodel.find();
+    const visitors = await visitorsmodel.find().sort({ datetime: -1 });
     //console.log(visitors.length);
     //return false;
     if (visitors.length > 0) {
