@@ -57,11 +57,11 @@ const VisitorsSchema = new Schema({
   },
   checkindatetime: {
     type: Date,
-    default: Date.now(),
+    default: Date(),
   },
   checkoutdatetime: {
     type: Date,
-    default: Date.now(),
+    default: Date(),
   },
   status: {
     type: Number,
