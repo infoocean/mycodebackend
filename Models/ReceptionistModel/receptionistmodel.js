@@ -38,6 +38,7 @@ const ReceptionistSchema = new Schema({
   },
   address2: {
     type: String,
+    default: "",
   },
   city: {
     type: String,
@@ -50,6 +51,18 @@ const ReceptionistSchema = new Schema({
   },
   postalcode: {
     type: Number,
+  },
+  registrationdate: {
+    type: Date,
+    default: Date.now(),
+  },
+  joiningdate: {
+    type: Date,
+    default: "1970-01-01T00:00:00.001Z",
+  },
+  leavingdate: {
+    type: Date,
+    default: "1970-01-01T00:00:00.001Z",
   },
   tokens: [
     {
@@ -74,4 +87,5 @@ const Receptionistmodel = new mongoose.model(
   "Receptionist",
   ReceptionistSchema
 );
+
 module.exports = Receptionistmodel;

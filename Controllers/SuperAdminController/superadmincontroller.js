@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 //require models
 const superadminmodel = require("../../Models/SuperAdminModel/superadmin");
 
@@ -62,7 +63,7 @@ const superadminlogincontroller = async (req, res) => {
           res.status(200).json({
             success: "login successfully",
             message:
-              "Authorization successful! this token use for rest api request",
+              "Authorization successful! this token use for all rest api request",
             token: token,
           });
         }

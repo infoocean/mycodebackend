@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 //require models
 const userregistration = require("../../Models/UserModels/usermodels");
+
 // user registration controller
 const UserRegistrationController = async (req, res) => {
   const { firstname, lastname, number, email, password, confirmpassword } =
     req.body;
-
   if (
     !firstname ||
     !lastname ||
@@ -17,7 +18,6 @@ const UserRegistrationController = async (req, res) => {
   ) {
     return res.status(400).send({ message: "all feild is required" });
   }
-
   //password bycript
   const secure_password = await bcrypt.hash(password, 12);
   const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
@@ -60,15 +60,6 @@ const UserRegistrationController = async (req, res) => {
 const UserLoginController = async (req, res) => {
   try {
     const email = req.body.email;
-    // const password = req.body.password;
-    // const secpass = await bcrypt.hash(password, 12);
-    // //console.log(secpass);
-    // const user = await userregistration.findOne({
-    //   email: email,
-    //   password: secpass,
-    // });
-    // console.log(user);
-    // return false;
 
     const isuser = await userregistration.findOne({
       email: email,

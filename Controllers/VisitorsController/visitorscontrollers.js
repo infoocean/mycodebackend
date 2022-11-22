@@ -6,128 +6,23 @@ const visitorsmodel = require("../../Models/visitormodel/visitormodel");
 
 // visitor registration controller
 const visitorregistrationcontroller = async (req, res) => {
-  const {
-    name,
-    email,
-    number,
-    dob,
-    age,
-    address,
-    country,
-    state,
-    city,
-    postalcode,
-    datetime,
-    govtidname,
-    govtidnumber,
-    purposetovisit,
-    assets,
-    checkindatetime,
-    checkoutdatetime,
-    status,
-  } = req.body;
-  if (!name || !email || !age || !address || !purposetovisit || !datetime) {
+  if (!req.body.name || !req.body.email || !req.body.number) {
     return res.status(400).send({ message: "all feild is required" });
   }
-  const visitordata = new visitorsmodel({
-    name: name,
-    email: email,
-    number: number,
-    dob: dob,
-    address: address,
-    country: country,
-    state: state,
-    city: city,
-    postalcode: postalcode,
-    age: age,
-    address: address,
-    datetime: datetime,
-    govtidname: govtidname,
-    govtidnumber: govtidnumber,
-    assets: assets,
-    purposetovisit: purposetovisit,
-    checkindatetime: checkindatetime,
-    checkoutdatetime: checkoutdatetime,
-    status: status,
-  });
-
-  //console.log(visitordata);
-  //return false;
-
+  const visitordata = new visitorsmodel(req.body);
   try {
     const check_email = await visitorsmodel.findOne({
-      email: email,
+      email: req.body.email,
     });
     if (check_email !== null) {
       return res.status(200).send({ message: "email allready registred " });
     }
     const savedata = await visitordata.save();
-    const send_visitor_data = {
-      name: savedata.name,
-      email: savedata.email,
-      age: savedata.age,
-      address: savedata.address,
-      purposetovisit: savedata.purposetovisit,
-      checkindatetime: savedata.checkindatetime,
-    };
-    res
-      .status(201)
-      .send({ message: "data save successfully", data: send_visitor_data });
+    res.status(201).send({ message: "data save successfully", data: savedata });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 };
-
-// visitor update controller
-const visitorupdatecontroller = async (req, res) => {
-  const _id = req.params.id;
-  const updatedta = req.body;
-  try {
-    const queryupdatedata = await visitorsmodel.findByIdAndUpdate(
-      _id,
-      updatedta,
-      { new: true }
-    );
-    //console.log(queryupdatedata);
-    res.status(202).send({ message: "data updated successfully" });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-};
-
-//visitor login controller
-// const visitorlogincontroller = async (req, res) => {
-//   const { email, username, password } = req.body;
-//   try {
-//     const isuser = await visitorsmodel.findOne({
-//       email: email,
-//     });
-
-//     if (isuser !== null) {
-//       const is_password_match = await bcrypt.compare(
-//         req.body.password,
-//         isuser.password
-//       );
-//       if (is_password_match === true) {
-//         const jwt_token = await isuser.generateAuthToken();
-//         //console.log(jwt_token);
-//         //set token in cookies
-//         res.cookie("jwt_auth_shub_token", jwt_token, {
-//           httpOnly: true,
-//         });
-//         res
-//           .status(200)
-//           .send({ message: "user login successfully", token: jwt_token });
-//       } else {
-//         res.status(400).json({ error: "invalid email or password" });
-//       }
-//     } else {
-//       res.status(400).json({ error: "invalid crendentials" });
-//     }
-//   } catch (error) {
-//     res.status(500).send({ message: error.message });
-//   }
-// };
 
 //get all visitors controllers
 const getvisitscontroller = async (req, res) => {
@@ -145,14 +40,12 @@ const getvisitscontroller = async (req, res) => {
   }
 };
 
-//get visitordet byid controller
+//get visitordet by id controller
 const getvisitsbyidcontroller = async (req, res) => {
-  //console.log(req.params.id);
-  //return false;
   try {
     const visitorsdet = await visitorsmodel.find({ _id: req.params.id });
     //console.log(visitorsdet);
-    if (visitorsdet) {
+    if (visitorsdet.length > 0) {
       res.status(200).send({ message: "ok", data: visitorsdet });
     } else {
       res.status(404).send({ message: "data not found" });
@@ -162,55 +55,42 @@ const getvisitsbyidcontroller = async (req, res) => {
   }
 };
 
-//get recent checking visitor controller
-const getrecentcheckingvisitors = async (req, res) => {
-  // const curr_date = new Date();
-  // let year = new Intl.DateTimeFormat("en", { year: "numeric" }).format(
-  //   curr_date
-  // );
-  // let month = new Intl.DateTimeFormat("en", { month: "short" }).format(
-  //   curr_date
-  // );
-  // let date = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(
-  //   curr_date
-  // );
-  // var mycurdate = `${date} ${month} ${year}`;
-  // var makeDate = new Date(mycurdate);
-  // console.log("Original date: ", makeDate.toString());
-  // makeDate.setMonth(makeDate.getMonth() - 1);
-  // //console.log("current date ", curr_date.toLocaleDateString());
-  // //console.log("1 month previous  date ", makeDate.toLocaleDateString());
-  // const currdt = curr_date.toLocaleDateString();
-  // const prev1mtdt = makeDate.toLocaleDateString();
-
+// visitor update controller
+const visitorupdatecontroller = async (req, res) => {
+  const _id = req.params.id;
+  const updatedta = req.body;
   try {
-    const recent_visitor = await visitorsmodel
-      .find({ status: 1 })
-      .sort({ checkindatetime: -1 })
-      .limit(10);
-
-    console.log(recent_visitor);
-    if (recent_visitor) {
-      res.status(200).send({ message: "ok", recent_visitor });
+    const queryupdatedata = await visitorsmodel.findByIdAndUpdate(
+      _id,
+      updatedta,
+      { new: true }
+    );
+    //console.log(queryupdatedata);
+    if (queryupdatedata !== null) {
+      res.status(202).send({ message: "data updated successfully" });
     } else {
-      res.status(400).send({ message: "data not found" });
+      res.status(404).send({ message: "invalid unique id" });
     }
   } catch (error) {
-    res.status(500).send({ error: error.message });
+    res.status(500).send({ message: error.message });
   }
 };
 
-//generate qr code
-const generateqrcodevisitorcontroller = async (req, res) => {
-  //console.log(req.params.id);
+//delete visitor controller
+const visitordeletecontroller = async (req, res) => {
+  const id = req.params.id;
   try {
-    myvisitordata = await visitorsmodel.findOne({ _id: req.params.id });
-    if (myvisitordata) {
-      const myqrdata = await QRCode.toDataURL(myvisitordata.name);
-      res.status(200).send({ data: myqrdata });
+    const deletevisitor = await visitorsmodel.deleteOne({
+      _id: id,
+    });
+    //console.log(deletevisitor);
+    if (deletevisitor.deletedCount !== 0) {
+      res.status(200).send({ message: `visitor deleted successfully` });
+    } else {
+      res.status(404).send({ message: `invalid unique id` });
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error);
   }
 };
 
@@ -239,26 +119,45 @@ const visitorsearchingcontroller = async (req, res) => {
     } else {
       res.status(404).send({ message: "data not found" });
     }
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
 };
 
-//delete visitor
-const visitordeletecontroller = async (req, res) => {
-  const id = req.params.id;
+//get recent checking visitor controller
+const getrecentcheckingvisitors = async (req, res) => {
   try {
-    const deletevisitor = await visitorsmodel.deleteOne({
-      _id: id,
-    });
-    //console.log(deletevisitor);
-    res.status(200).send({ message: ` deleted successfully` });
+    const recent_visitor = await visitorsmodel
+      .find({ status: 1 })
+      .sort({ checkindatetime: -1 })
+      .limit(10);
+    console.log(recent_visitor);
+    if (recent_visitor.length > 0) {
+      res.status(200).send({ message: "ok", recent_visitor });
+    } else {
+      res.status(400).send({ message: "data not found" });
+    }
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send({ error: error.message });
+  }
+};
+
+//generate qr code
+const generateqrcodevisitorcontroller = async (req, res) => {
+  //console.log(req.params.id);
+  try {
+    myvisitordata = await visitorsmodel.findOne({ _id: req.params.id });
+    if (myvisitordata) {
+      const myqrdata = await QRCode.toDataURL(myvisitordata.name);
+      res.status(200).send({ data: myqrdata });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
 module.exports = {
   visitorregistrationcontroller,
-  // visitorlogincontroller,
   getvisitscontroller,
   getvisitsbyidcontroller,
   visitorupdatecontroller,

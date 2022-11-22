@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+
 //require models
 const Receptionistmodel = require("../../Models/ReceptionistModel/receptionistmodel");
 
@@ -27,7 +28,6 @@ const receptionistregistrationcontroller = async (req, res) => {
     country,
     postalcode,
   } = req.body;
-
   if (
     !firstname ||
     !lastname ||
@@ -41,11 +41,9 @@ const receptionistregistrationcontroller = async (req, res) => {
   ) {
     return res.status(400).send({ message: "all feild is required" });
   }
-
   //password bycript
   const secure_password = await bcrypt.hash(password, 12);
   const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
-
   const receptionistdata = new Receptionistmodel({
     firstname: firstname,
     lastname: lastname,
@@ -63,7 +61,6 @@ const receptionistregistrationcontroller = async (req, res) => {
     country: country,
     postalcode: postalcode,
   });
-
   try {
     const check_email = await Receptionistmodel.findOne({
       email: email,
@@ -77,8 +74,18 @@ const receptionistregistrationcontroller = async (req, res) => {
     const send_Receptionist_data = {
       firstname: savedata.firstname,
       lastname: savedata.lastname,
+      username: savedata.username,
       email: savedata.email,
       number: savedata.number,
+      dob: savedata.dob,
+      age: savedata.age,
+      address1: savedata.address1,
+      address2: savedata.address2,
+      city: savedata.city,
+      state: savedata.state,
+      country: savedata.country,
+      postalcode: savedata.postalcode,
+      registrationdate: savedata.registrationdate,
     };
     res.status(201).send({
       message: "data save successfully",
@@ -88,6 +95,7 @@ const receptionistregistrationcontroller = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+
 //receptionist login controller
 const receptionistlogincontroller = async (req, res) => {
   //console.log(req.body);
@@ -99,28 +107,21 @@ const receptionistlogincontroller = async (req, res) => {
     //console.log(isuser);
     //return false;
     if (isuser !== null) {
-      const is_password_match = await bcrypt.compare(
-        req.body.password,
-        isuser.password
-      );
+      const is_password_match = await bcrypt.compare(password, isuser.password);
       if (is_password_match === true) {
-        const jwt_token = await isuser.generateAuthToken();
-        //console.log(jwt_token);
+        const jwttoken = await isuser.generateAuthToken();
+        //console.log(jwttoken);
         //set token in cookies
-        // res.cookie("jwttoken", jwt_token, {
-        //   maxAge: 7200000, // 2 hours
-        //   secure: false, // set to true if your using https
-        //   httpOnly: true,
-        // });
+        res.cookie("jwttoken", jwttoken, {
+          maxAge: 7200000, // 2 hours
+          secure: false, // set to true if your using https
+          httpOnly: true,
+        });
         res
           .status(200)
-          .cookie("jwttoken", jwt_token, {
-            maxAge: 18000,
-            httpOnly: true,
-          })
-          .send({ message: "user login successfully", token: jwt_token });
+          .send({ message: "user login successfully", token: jwttoken });
       } else {
-        res.status(400).json({ error: "invalid email or password" });
+        res.status(400).json({ error: "invalid crendentials" });
       }
     } else {
       res.status(400).json({ error: "invalid crendentials" });
@@ -129,6 +130,7 @@ const receptionistlogincontroller = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+
 //get all receptionist controllers
 const getreceptionistcontroller = async (req, res) => {
   try {
@@ -148,44 +150,15 @@ const getreceptionistcontroller = async (req, res) => {
     res.status(500).send(error);
   }
 };
-//update receptionist  controllers
-const updatereceptionistcontroller = async (req, res) => {
-  const _id = req.params.id;
-  const updatedta = req.body;
-  try {
-    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
-      _id,
-      updatedta,
-      { new: true }
-    );
-    //console.log(queryupdatedata);
-    res.status(202).send({ message: "data updated successfully" });
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
-};
-//delete receptionist controllers
-const deletereceptionistcontroller = async (req, res) => {
-  const id = req.params.id;
-  //console.log(get_user_id);
-  try {
-    const deleterecepionistdata = await Receptionistmodel.deleteOne({
-      _id: id,
-    });
-    //console.log(deleterecepionistdata);
-    res.status(200).send({ message: `data deleted successfully` });
-  } catch (error) {
-    res.status(500).json({ message: error });
-  }
-};
+
 //get receptionist by id controller
 const getreceptionistbyidcontroller = async (req, res) => {
   const id = req.params.id;
-  //console.log(get_user_id);
+  //console.log(id);
   try {
     const receptionistdata = await Receptionistmodel.findOne({
       _id: id,
-    });
+    }).select(["-password", "-confirmpassword", "-tokens"]);
     if (receptionistdata !== null) {
       //console.log(deleteadminuserdata);
       res.status(200).send({ message: `ok  successfully`, receptionistdata });
@@ -197,32 +170,68 @@ const getreceptionistbyidcontroller = async (req, res) => {
   }
 };
 
-//logout controller
-const receptionistlogout = async (req, res) => {
-  // Set token to none and expire after 1 seconds
-  res.cookie("jwttoken", "none", {
-    expires: new Date(Date.now() + 1 * 1000),
-    httpOnly: true,
-  });
-  res
-    .status(200)
-    .json({ success: true, message: " receptionist logged out successfully" });
+//update receptionist by id  controllers
+const updatereceptionistcontroller = async (req, res) => {
+  const _id = req.params.id;
+  const updatedta = req.body;
+  try {
+    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
+      _id,
+      updatedta,
+      { new: true }
+    ).select(["-password", "-confirmpassword", "-tokens"]);
+    //console.log(queryupdatedata);
+    if (queryupdatedata !== null) {
+      res
+        .status(202)
+        .send({ message: "data updated successfully", data: queryupdatedata });
+    } else {
+      res.status(400).send({
+        message:
+          "please fill valid details or check user unique id, unique id not match",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
 };
 
-//getreceptionistbytoken
+//delete receptionist controllers
+const deletereceptionistcontroller = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const deleterecepionistdata = await Receptionistmodel.deleteOne({
+      _id: id,
+    });
+    //console.log(deleterecepionistdata);
+    //console.log(deleterecepionistdata.deletedCount);
+    if (deleterecepionistdata.deletedCount !== 0) {
+      res.status(202).send({ message: `data deleted successfully` });
+    } else {
+      res
+        .status(404)
+        .send({ message: `mismatch crendentials please check unique id` });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
 
+//get receptionist by token controller
 const getreceptionistbytoken = async (req, res) => {
   //console.log(req.params.login_token);
   try {
-    const user_name = await Receptionistmodel.findOne({
+    const userdata = await Receptionistmodel.findOne({
       "tokens.token": req.params.login_token,
-    }).select(["-tokens"]);
-    if (user_name) {
-      res.status(200).send({ user: user_name.firstname });
+    }).select(["-tokens", "-password", "-confirmpassword"]);
+    //console.log(userdata);
+    if (userdata !== null) {
+      res.status(200).send({ message: "ok", userdata });
+    } else {
+      res.status(400).send({ message: "invalid login token" });
     }
-    console.log(user_name);
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ message: error.message });
   }
 };
 
@@ -233,6 +242,5 @@ module.exports = {
   updatereceptionistcontroller,
   deletereceptionistcontroller,
   getreceptionistbyidcontroller,
-  receptionistlogout,
   getreceptionistbytoken,
 };
