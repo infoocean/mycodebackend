@@ -143,7 +143,7 @@ const sendresetpassemailcontroller = async (req, res) => {
                           instructions.
                         </p>
                         <a
-                          href=${req.body.link}${myid}
+                          href=${req.body.link}/${myid}
                           style="background:#057035;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;"
                         >
                           Reset Password
