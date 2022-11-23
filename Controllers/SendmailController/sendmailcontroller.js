@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
-
+const bcrypt = require("bcryptjs");
 //require model
 const Receptionistmodel = require("../../Models/ReceptionistModel/receptionistmodel");
 const visitorsmodel = require("../../Models/visitormodel/visitormodel");
@@ -70,7 +70,9 @@ const sendresetpassemailcontroller = async (req, res) => {
     const checkemail = await Receptionistmodel.findOne({
       email: req.body.email,
     });
-    //console.log(JSON.parse(checkemail));
+    //console.log(checkemail);
+    const myid = checkemail._id.toString();
+    //console.log(myid);
     //return false;
     if (checkemail !== null) {
       let transporter = nodemailer.createTransport({
@@ -141,7 +143,7 @@ const sendresetpassemailcontroller = async (req, res) => {
                           instructions.
                         </p>
                         <a
-                          href=${req.body.link}${checkemail.email}
+                          href=${req.body.link}${myid}
                           style="background:#057035;text-decoration:none !important; font-weight:500; margin-top:35px; color:#fff;text-transform:uppercase; font-size:14px;padding:10px 24px;display:inline-block;border-radius:50px;"
                         >
                           Reset Password
@@ -191,7 +193,42 @@ const sendresetpassemailcontroller = async (req, res) => {
   }
 };
 
+const setnewpassword = async (req, res) => {
+  //console.log(req.body);
+  const _id = req.params.id;
+  const { password, confirmpassword } = req.body;
+  //bycript password
+  const secure_password = await bcrypt.hash(password, 12);
+  const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
+  const setnewpass = {
+    password: secure_password,
+    confirmpassword: secure_confirmpassword,
+  };
+  //console.log(setnewpass);
+  //return false;
+  try {
+    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
+      _id,
+      setnewpass
+    );
+    //console.log(queryupdatedata);
+    //return false;
+    if (res !== null) {
+      res.status(202).send({
+        message: "password updated successfully",
+      });
+    } else {
+      res.status(400).send({
+        message: "errors server invalid crendiential",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   sendmailcontroller,
   sendresetpassemailcontroller,
+  setnewpassword,
 };

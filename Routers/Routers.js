@@ -51,6 +51,7 @@ const {
 const {
   sendmailcontroller,
   sendresetpassemailcontroller,
+  setnewpassword,
 } = require("../Controllers/SendmailController/sendmailcontroller");
 
 //##########################################################################################
@@ -85,6 +86,8 @@ router.get(
   verifyAuthToken,
   getreceptionistbytoken
 );
+
+router.post("/setnewpassword/:id", setnewpassword);
 
 //#########################################  visitors routers ################################
 router.post(
