@@ -50,6 +50,7 @@ const {
 //########################################   Send email controller   #######################
 const {
   sendmailcontroller,
+  sendresetpassemailcontroller,
 } = require("../Controllers/SendmailController/sendmailcontroller");
 
 //##########################################################################################
@@ -118,5 +119,11 @@ router.post("/generateqrcodevisitor/:id", generateqrcodevisitorcontroller);
 
 //##########################################   send mail router   #############################
 router.post("/sendmail", sendmailcontroller);
+//########################################## send password reset link email router  #######
+router.post(
+  "/sendresetpasswordemail",
+  verifyAuthToken,
+  sendresetpassemailcontroller
+);
 
 module.exports = router;
