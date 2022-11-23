@@ -235,6 +235,31 @@ const getreceptionistbytoken = async (req, res) => {
   }
 };
 
+//change recepoinist password
+const changepassword = async (req, res) => {
+  const _id = req.params.id;
+  const updatedta = req.body;
+  try {
+    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
+      _id,
+      updatedta,
+      { new: true }
+    );
+    //console.log(queryupdatedata);
+    if (queryupdatedata !== null) {
+      res.status(202).send({
+        message: "Password Change successfully",
+      });
+    } else {
+      res.status(400).send({
+        message: "invalid crendfiantial",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   receptionistregistrationcontroller,
   receptionistlogincontroller,
@@ -243,4 +268,5 @@ module.exports = {
   deletereceptionistcontroller,
   getreceptionistbyidcontroller,
   getreceptionistbytoken,
+  changepassword,
 };

@@ -20,6 +20,7 @@ const {
   updatereceptionistcontroller,
   deletereceptionistcontroller,
   getreceptionistbytoken,
+  changepassword,
 } = require("../Controllers/ReceptionistController/receptionistcontroller");
 
 //########################################## Visitors controllers   ########################
@@ -88,6 +89,8 @@ router.get(
 );
 
 router.post("/setnewpassword/:id", setnewpassword);
+
+router.post("/changepassword/:id", changepassword);
 
 //#########################################  visitors routers ################################
 router.post(
