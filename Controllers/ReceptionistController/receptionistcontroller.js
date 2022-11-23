@@ -238,7 +238,15 @@ const getreceptionistbytoken = async (req, res) => {
 //change recepoinist password
 const changepassword = async (req, res) => {
   const _id = req.params.id;
-  const updatedta = req.body;
+  const { password, confirmpassword } = req.body;
+  const secure_password = await bcrypt.hash(password, 12);
+  const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
+
+  const updatedta = {
+    password: secure_password,
+    confirmpassword: secure_confirmpassword,
+  };
+
   try {
     const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
       _id,
