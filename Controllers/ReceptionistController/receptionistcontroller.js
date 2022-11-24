@@ -276,7 +276,7 @@ const profileimgupload = async (req, res) => {
     const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
       { _id: req.params.id },
       {
-        image: req.file.filename,
+        image: req.file.image,
       },
       { new: true }
     ).select(["-password", "-confirmpassword", "-tokens"]);
@@ -284,7 +284,7 @@ const profileimgupload = async (req, res) => {
     if (queryupdatedata !== null) {
       res
         .status(202)
-        .send({ message: "data updated successfully", data: queryupdatedata });
+        .send({ message: "image updated successfully", data: queryupdatedata });
     } else {
       res.status(400).send({
         message:
