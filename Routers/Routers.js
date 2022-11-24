@@ -91,11 +91,7 @@ router.get(
   getreceptionistbytoken
 );
 
-router.patch(
-  "/profileimgupload/:id",
-  uploads.single("image"),
-  profileimgupload
-);
+router.put("/profileimgupload/:id", uploads.single("image"), profileimgupload);
 
 router.post("/setnewpassword/:id", setnewpassword);
 

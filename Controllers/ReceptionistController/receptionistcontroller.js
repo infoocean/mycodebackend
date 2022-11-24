@@ -270,13 +270,14 @@ const changepassword = async (req, res) => {
 
 //profile img upload
 const profileimgupload = async (req, res) => {
-  //console.log(req.file.filename);
+  console.log(req.file);
+  //return false;
   //console.log(req.params.id);
   try {
     const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
       { _id: req.params.id },
       {
-        image: req.file.image,
+        image: req.file.path,
       },
       { new: true }
     ).select(["-password", "-confirmpassword", "-tokens"]);
