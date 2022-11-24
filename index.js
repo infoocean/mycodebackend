@@ -9,6 +9,8 @@ app.use(express.json());
 app.use(cors());
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 
 const HOSTNAME = process.env.HOSTNAME;
 const PORT = process.env.PORT || 5000;
