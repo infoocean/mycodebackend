@@ -6,6 +6,8 @@ const router = express.Router();
 const { verifyAuthToken } = require("../Middlewares/auth");
 //aunthontication middleware
 const { verifyLoginAuthToken } = require("../Middlewares/loginauthtoken");
+//upload image
+const uploads = require("../Middlewares/uploadmulter");
 
 //##########################################################################################
 //#                                    REQUIRE CONTROLLERS                                 #
@@ -21,6 +23,7 @@ const {
   deletereceptionistcontroller,
   getreceptionistbytoken,
   changepassword,
+  profileimgupload,
 } = require("../Controllers/ReceptionistController/receptionistcontroller");
 
 //########################################## Visitors controllers   ########################
@@ -86,6 +89,12 @@ router.get(
   "/getreceptionistbytoken/:login_token",
   verifyAuthToken,
   getreceptionistbytoken
+);
+
+router.patch(
+  "/profileimgupload/:id",
+  uploads.single("image"),
+  profileimgupload
 );
 
 router.post("/setnewpassword/:id", setnewpassword);

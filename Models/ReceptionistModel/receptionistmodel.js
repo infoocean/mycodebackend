@@ -64,6 +64,10 @@ const ReceptionistSchema = new Schema({
     type: Date,
     default: "1970-01-01T00:00:00.001Z",
   },
+  image: {
+    type: String,
+    default: "",
+  },
   tokens: [
     {
       token: { type: String },

@@ -268,6 +268,34 @@ const changepassword = async (req, res) => {
   }
 };
 
+//profile img upload
+const profileimgupload = async (req, res) => {
+  //console.log(req.file.filename);
+  //console.log(req.params.id);
+  try {
+    const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
+      { _id: req.params.id },
+      {
+        image: req.file.filename,
+      },
+      { new: true }
+    ).select(["-password", "-confirmpassword", "-tokens"]);
+    //console.log(queryupdatedata);
+    if (queryupdatedata !== null) {
+      res
+        .status(202)
+        .send({ message: "data updated successfully", data: queryupdatedata });
+    } else {
+      res.status(400).send({
+        message:
+          "please fill valid details or check user unique id, unique id not match",
+      });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 module.exports = {
   receptionistregistrationcontroller,
   receptionistlogincontroller,
@@ -277,4 +305,5 @@ module.exports = {
   getreceptionistbyidcontroller,
   getreceptionistbytoken,
   changepassword,
+  profileimgupload,
 };
