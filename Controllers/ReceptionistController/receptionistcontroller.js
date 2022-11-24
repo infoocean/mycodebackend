@@ -270,7 +270,7 @@ const changepassword = async (req, res) => {
 
 //profile img upload
 const profileimgupload = async (req, res) => {
-  console.log(req.file);
+  //console.log(req.file);
   //return false;
   //console.log(req.params.id);
   try {
