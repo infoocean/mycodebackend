@@ -208,9 +208,9 @@ const deletereceptionistcontroller = async (req, res) => {
     if (deleterecepionistdata.deletedCount !== 0) {
       res.status(202).send({ message: `data deleted successfully` });
     } else {
-      res
-        .status(404)
-        .send({ message: `mismatch crendentials please check unique id` });
+      res.status(404).send({
+        message: `data not found mismatch crendentials please check unique id`,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: error });
@@ -219,11 +219,14 @@ const deletereceptionistcontroller = async (req, res) => {
 
 //get receptionist by token controller
 const getreceptionistbytoken = async (req, res) => {
-  //console.log(req.params.login_token);
+  //console.log(req.user_id);
+  const id = req.user_id;
   try {
-    const userdata = await Receptionistmodel.findOne({
-      "tokens.token": req.params.login_token,
-    }).select(["-tokens", "-password", "-confirmpassword"]);
+    const userdata = await Receptionistmodel.findOne({ _id: id }).select([
+      "-tokens",
+      "-password",
+      "-confirmpassword",
+    ]);
     //console.log(userdata);
     if (userdata !== null) {
       res.status(200).send({ message: "ok", userdata });
@@ -237,7 +240,7 @@ const getreceptionistbytoken = async (req, res) => {
 
 //change recepoinist password
 const changepassword = async (req, res) => {
-  const _id = req.params.id;
+  const id = req.user_id;
   const { password, confirmpassword } = req.body;
   const secure_password = await bcrypt.hash(password, 12);
   const secure_confirmpassword = await bcrypt.hash(confirmpassword, 12);
@@ -249,7 +252,7 @@ const changepassword = async (req, res) => {
 
   try {
     const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
-      _id,
+      { _id: id },
       updatedta,
       { new: true }
     );
@@ -259,8 +262,8 @@ const changepassword = async (req, res) => {
         message: "Password Change successfully",
       });
     } else {
-      res.status(400).send({
-        message: "invalid crendfiantial",
+      res.status(401).send({
+        message: "Un Authorizied invalid login token",
       });
     }
   } catch (error) {
@@ -272,10 +275,10 @@ const changepassword = async (req, res) => {
 const profileimgupload = async (req, res) => {
   //console.log(req.file);
   //return false;
-  //console.log(req.params.id);
+  const id = req.user_id;
   try {
     const queryupdatedata = await Receptionistmodel.findByIdAndUpdate(
-      { _id: req.params.id },
+      { _id: id },
       {
         image: req.file.path,
       },
@@ -287,9 +290,8 @@ const profileimgupload = async (req, res) => {
         .status(202)
         .send({ message: "image updated successfully", data: queryupdatedata });
     } else {
-      res.status(400).send({
-        message:
-          "please fill valid details or check user unique id, unique id not match",
+      res.status(401).send({
+        message: " unauthorisized AunInvalid Login token",
       });
     }
   } catch (error) {

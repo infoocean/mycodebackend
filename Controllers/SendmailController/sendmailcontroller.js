@@ -70,11 +70,11 @@ const sendresetpassemailcontroller = async (req, res) => {
     const checkemail = await Receptionistmodel.findOne({
       email: req.body.email,
     });
-    //console.log(checkemail);
-    const myid = checkemail._id.toString();
-    //console.log(myid);
+    console.log(checkemail);
     //return false;
     if (checkemail !== null) {
+      const myid = checkemail._id.toString();
+      //console.log(myid);
       let transporter = nodemailer.createTransport({
         host: "smtp.ethereal.email",
         port: 587,
@@ -195,6 +195,7 @@ const sendresetpassemailcontroller = async (req, res) => {
 
 const setnewpassword = async (req, res) => {
   //console.log(req.body);
+  //return false;
   const _id = req.params.id;
   const { password, confirmpassword } = req.body;
   //bycript password

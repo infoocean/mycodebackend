@@ -69,7 +69,7 @@ const visitorupdatecontroller = async (req, res) => {
     if (queryupdatedata !== null) {
       res.status(202).send({ message: "data updated successfully" });
     } else {
-      res.status(404).send({ message: "invalid unique id" });
+      res.status(404).send({ message: " data Not found invalid unique id" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -87,7 +87,7 @@ const visitordeletecontroller = async (req, res) => {
     if (deletevisitor.deletedCount !== 0) {
       res.status(200).send({ message: `visitor deleted successfully` });
     } else {
-      res.status(404).send({ message: `invalid unique id` });
+      res.status(404).send({ message: `data not found invalid unique id` });
     }
   } catch (error) {
     res.status(500).send(error);

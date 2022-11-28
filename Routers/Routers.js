@@ -51,6 +51,8 @@ const {
   superadminlogincontroller,
 } = require("../Controllers/SuperAdminController/superadmincontroller");
 
+////######################################## get auth controller   #######################
+const { getauthtoken } = require("../Controllers/GetAuthtoken/getauthtoken");
 //########################################   Send email controller   #######################
 const {
   sendmailcontroller,
@@ -69,33 +71,53 @@ router.post(
   receptionistregistrationcontroller
 );
 router.post("/receptionistlogin", verifyAuthToken, receptionistlogincontroller);
-router.get("/getreceptionist", verifyAuthToken, getreceptionistcontroller);
+router.get(
+  "/getreceptionist",
+  verifyAuthToken,
+  verifyLoginAuthToken,
+  getreceptionistcontroller
+);
 router.get(
   "/getceptionist/:id",
   verifyAuthToken,
+  verifyLoginAuthToken,
   getreceptionistbyidcontroller
 );
 router.put(
   "/updatereceptionist/:id",
   verifyAuthToken,
+  verifyLoginAuthToken,
   updatereceptionistcontroller
 );
 router.delete(
   "/deletereceptionist/:id",
   verifyAuthToken,
+  verifyLoginAuthToken,
   deletereceptionistcontroller
 );
 router.get(
-  "/getreceptionistbytoken/:login_token",
+  "/getreceptionistbytoken",
   verifyAuthToken,
+  verifyLoginAuthToken,
   getreceptionistbytoken
 );
 
-router.put("/profileimgupload/:id", uploads.single("image"), profileimgupload);
+router.put(
+  "/profileimgupload",
+  uploads.single("image"),
+  verifyAuthToken,
+  verifyLoginAuthToken,
+  profileimgupload
+);
 
-router.post("/setnewpassword/:id", setnewpassword);
+router.post(
+  "/changepassword",
+  verifyAuthToken,
+  verifyLoginAuthToken,
+  changepassword
+);
 
-router.post("/changepassword/:id", changepassword);
+router.post("/setnewpassword/:id", verifyAuthToken, setnewpassword);
 
 //#########################################  visitors routers ################################
 router.post(
@@ -126,15 +148,22 @@ router.post("/userlogin", verifyAuthToken, UserLoginController);
 router.get("/userdata", verifyAuthToken, UserData);
 
 //##########################################   generate qrcode controller  ####################
-router.post("/generateqrcodevisitor/:id", generateqrcodevisitorcontroller);
+router.post(
+  "/generateqrcodevisitor/:id",
+  verifyAuthToken,
+  generateqrcodevisitorcontroller
+);
 
 //##########################################   send mail router   #############################
-router.post("/sendmail", sendmailcontroller);
+router.post("/sendmail", verifyAuthToken, sendmailcontroller);
 //########################################## send password reset link email router  #######
 router.post(
   "/sendresetpasswordemail",
   verifyAuthToken,
   sendresetpassemailcontroller
 );
+
+//get public authorization token
+router.get("/getauthtoken", getauthtoken);
 
 module.exports = router;
